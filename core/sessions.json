@@ -1,0 +1,32 @@
+{
+    "mistral": [
+        {
+            "id": "1764995147724-3054-mistral-1764995147",
+            "title": "halo"
+        }
+    ],
+    "chatgpt": [
+        {
+            "id": "1764995938018-3270-chatgpt-1764995938",
+            "title": "halo"
+        }
+    ],
+    "chatgptv2": [
+        {
+            "id": "1764996280418-8700-chatgpt-1764996280",
+            "title": "tolong analisa gambar"
+        }
+    ],
+    "deepseek": [
+        {
+            "id": "1764996494650-1638-deepseek-1764996494",
+            "title": "apakah kamu bisa bahasa indonesia, dan apa saja yang bisa kamu lakukan"
+        }
+    ],
+    "gemini": [
+        {
+            "id": "1764996786291-1180-gemini-1764996786",
+            "title": "tolong bantu saya analisa gambar"
+        }
+    ]
+}
