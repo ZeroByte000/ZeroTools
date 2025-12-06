@@ -6,14 +6,13 @@ from datetime import datetime
 from core.utils import *
 from app.console import *
 
-
 def image_to_anime():
-    """Mengubah gambar (lokal atau dari URL) menjadi gaya anime."""
     clear()
     print_cyber_panel("Image to Anime", "Masukkan path gambar atau link URL")
-    
-    image_input = cyber_input("Path/URL gambar (contoh: /sdcard/foto.jpg atau https://.../image.jpg)")
-    
+    image_input = cyber_input("Path/URL gambar (contoh: /sdcard/foto.jpg) atau ketik '00' untuk kembali")
+    if image_input == '00':
+        return 
+
     public_url = None
 
     if image_input.startswith(('http://', 'https://')):
@@ -52,8 +51,6 @@ def image_to_anime():
             response.raise_for_status()
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             output_filename = f"anime_image_{timestamp}.png"
-
-            # --- PERUBAHAN: Gunakan fungsi helper untuk menentukan path output ---
             output_path = get_output_path("output", output_filename)
 
             with open(output_path, 'wb') as f:
@@ -66,5 +63,5 @@ def image_to_anime():
             console.print(f"\n[bold red]Error saat memanggil API:[/bold red] {e}")
         except Exception as e:
             console.print(f"\n[bold red]Terjadi kesalahan tak terduga:[/bold red] {e}")
-            
+
     cyber_input("\nTekan Enter untuk kembali ke menu...")

@@ -12,7 +12,11 @@ from .functions.waifu2x import waifu2x
 from .functions.txt_to_image import txt_to_image
 from .functions.txt_to_image_v2 import txt_to_image_v2
 from .functions.flux_schnell import flux_schnell
-from app.console import console, print_cyber_panel, cyber_input, create_menu_table, clear
+from app.console import console, cyber_input, clear
+from rich.table import Table
+from rich.panel import Panel
+from rich.box import SQUARE
+
 
 def main():
     """Fungsi utama untuk menu AI. Ini yang dipanggil oleh main.py."""
@@ -33,25 +37,56 @@ def main():
 
     while True:
         clear()
-        print_cyber_panel("AI Tools Menu", "Pilih alat AI yang ingin digunakan")
+
+        table = Table(
+            show_header=True,
+            header_style="bold #00F0FF",
+            title="[bold magenta]✨ AI Tools ✨[/bold magenta]",
+            title_style="bold magenta",
+            title_justify="center",
+            box=SQUARE,
+            border_style="#00F0FF", 
+            show_lines=True,
+            expand=True,
+            padding=(0, 1)
+        )
+
+        table.add_column("No.", style="bold white", width=4, justify="center")
+        table.add_column("Menu", style="bold white", overflow=None)
+        table.add_column("Deskripsi", style="bold white", overflow=None)
 
         ai_options = [
-            "Image to Anime",
-            "Penghitam Waifu",
-            "Mistral Ai",
-            "ChatGPT Ai",
-            "ChatGPT V2",
-            "Deepseek Ai",
-            "Gemini Ai",
-            "Colorize Ai",
-            "Waifu2x",
-            "TxT to Image",
-            "TxT to Image (v2)",
-            "Flux Schnell",
+            {"name": "Image to Anime", "desc": "Ubah gambar jadi anime."},
+            {"name": "Penghitam Waifu", "desc": "Terapkan filter gelap."},
+            {"name": "Mistral Ai", "desc": "Chatbot AI percakapan."},
+            {"name": "ChatGPT Ai", "desc": "Chatbot AI populer."},
+            {"name": "ChatGPT V2", "desc": "ChatGPT dengan analisis gambar."},
+            {"name": "Deepseek Ai", "desc": "Chatbot AI alternatif."},
+            {"name": "Gemini Ai", "desc": "AI dari Google dengan analisis gambar."},
+            {"name": "Colorize Ai", "desc": "Warnai gambar hitam-putih."},
+            {"name": "Waifu2x", "desc": "Tingkatkan kualitas gambar anime."},
+            {"name": "TxT to Image", "desc": "Buat gambar dari teks."},
+            {"name": "TxT to Image (v2)", "desc": "Pembuat gambar versi 2."},
+            {"name": "Flux Schnell", "desc": "Buat gambar dari teks (cepat)."},
         ]
         
-        menu_table = create_menu_table("[bold blue]AI Sub-Menu[/bold blue]", ai_options)
-        console.print(menu_table)
+        for i, item in enumerate(ai_options):
+            table.add_row(
+                str(i + 1),
+                item['name'],
+                item['desc']
+            )
+        
+        table.add_row("0", "[bold yellow]← Kembali[/bold yellow]", "[bold #00F0FF]Kembali ke menu utama.[/bold #00F0FF]")
+
+        panel = Panel(
+            table,
+            border_style="#00F0FF",  
+            padding=(1, 1)
+        )
+        console.print(panel)
+
+        console.print("[dim]Gunakan '0' atau 'b' untuk kembali.[/dim]")
 
         choice = cyber_input("Pilih alat AI")
 

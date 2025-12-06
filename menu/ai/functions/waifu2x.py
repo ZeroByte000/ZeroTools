@@ -3,17 +3,17 @@
 import os
 import requests
 from datetime import datetime
-
-from core.utils import *
-from app.console import *
-
+from core.utils import upload_to_imgbb_no_api, load_config, get_output_path
+from app.console import console, print_cyber_panel, cyber_input, clear, loading_animation
 
 def waifu2x():
-    """Memperbesar dan meningkatkan kualitas gambar (anime-style) menggunakan Waifu2x."""
     clear()
     print_cyber_panel("Waifu2x", "Masukkan path gambar atau link URL")
+
+    image_input = cyber_input("Path/URL gambar (contoh: /sdcard/foto.jpg) atau ketik '00' untuk kembali")
     
-    image_input = cyber_input("Path/URL gambar (contoh: /sdcard/foto.jpg atau https://.../image.jpg)")
+    if image_input == '00':
+        return 
     
     public_url = None
 
@@ -51,21 +51,21 @@ def waifu2x():
             
             response = requests.get(api_endpoint, params=params, headers={'accept': 'image/png'})
             response.raise_for_status()
+
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            output_filename = f"anime_image_{timestamp}.png"
+            output_filename = f"waifu2x_image_{timestamp}.png"
 
-            # --- PERUBAHAN: Gunakan fungsi helper untuk menentukan path output ---
             output_path = get_output_path("output", output_filename)
-
+            
             with open(output_path, 'wb') as f:
                 f.write(response.content)
-                
-            console.print(f"\n[bold green]✓ Gambar berhasil diubah![/bold green]")
+
+            console.print(f"\n[bold green]✓ Gambar berhasil diperbesar![/bold green]")
             console.print(f"Disimpan di: [bold cyan]{output_path}[/bold cyan]")
 
         except requests.exceptions.RequestException as e:
             console.print(f"\n[bold red]Error saat memanggil API:[/bold red] {e}")
         except Exception as e:
             console.print(f"\n[bold red]Terjadi kesalahan tak terduga:[/bold red] {e}")
-            
+
     cyber_input("\nTekan Enter untuk kembali ke menu...")

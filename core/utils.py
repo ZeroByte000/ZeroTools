@@ -5,12 +5,11 @@ import os
 import json
 import time
 import re
-
+from app.console import console, print_cyber_panel, cyber_input, clear
 from bs4 import BeautifulSoup
 from app.console import console, cyber_input
 
 def load_config():
-    """Memuat konfigurasi dari file core/config.json."""
     try:
         base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         config_path = os.path.join(base_path, 'core', 'config.json')
@@ -25,7 +24,7 @@ def load_config():
         return None
 
 def upload_to_imgbb_no_api(image_path: str) -> str | None:
-    """Mengunggah gambar ke ImgBB tanpa API key, dengan meniru browser."""
+
     if not os.path.exists(image_path):
         console.print(f"[bold red]Error:[/bold red] File tidak ditemukan di path '{image_path}'")
         return None
@@ -81,7 +80,6 @@ def upload_to_imgbb_no_api(image_path: str) -> str | None:
 SESSIONS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sessions.json')
 
 def load_sessions(chat_model: str) -> list:
-    """Memuat semua sesi untuk model chat tertentu dari file JSON."""
     try:
         with open(SESSIONS_FILE, 'r') as f:
             all_sessions = json.load(f)
@@ -90,12 +88,10 @@ def load_sessions(chat_model: str) -> list:
         return []
 
 def save_all_sessions(all_sessions: dict):
-    """Menyimpan semua sesi ke file JSON."""
     with open(SESSIONS_FILE, 'w') as f:
         json.dump(all_sessions, f, indent=4)
 
 def save_new_session(chat_model: str, session_id: str, title: str):
-    """Menyimpan sesi baru ke file JSON."""
     all_sessions = {}
     try:
         with open(SESSIONS_FILE, 'r') as f:
@@ -111,7 +107,7 @@ def save_new_session(chat_model: str, session_id: str, title: str):
         save_all_sessions(all_sessions)
 
 def delete_session_ui(chat_model: str):
-    """Menampilkan daftar sesi dan meminta user untuk memilih yang akan dihapus."""
+
     sessions = load_sessions(chat_model)
     if not sessions:
         console.print("[yellow]Tidak ada sesi untuk dihapus.[/yellow]")
@@ -155,7 +151,7 @@ def delete_session_ui(chat_model: str):
             console.print("[red]Pilihan tidak valid.[/red]")
 
 def display_and_select_session(chat_model: str) -> str | None:
-    """Menampilkan daftar sesi dan meminta user untuk memilih atau keluar."""
+
     sessions = load_sessions(chat_model)
     if not sessions:
         console.print("[yellow]Tidak ada sesi tersedia. Memulai sesi baru.[/yellow]")
@@ -185,23 +181,17 @@ def display_and_select_session(chat_model: str) -> str | None:
             return sessions[int(choice) - 1]['id']
         console.print("[red]Pilihan tidak valid.[/red]")
 
-def get_output_path(default_dir_name: str, filename: str) -> str:
-    """
-    Meminta input path output dari user atau menggunakan default.
-    Membuat folder jika belum ada.
-    """
-    # Default path adalah 'output' di direktori yang sama dengan main.py
+def get_output_path(default_dir_name: str, filename: str, no_prompt: bool = False) -> str:
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     default_path = os.path.join(project_root, default_dir_name)
     
-    # Minta input dari user, dengan default path sebagai petunjuk
-    output_dir = cyber_input(f"Output path (default: {default_path})")
-    
-    # Jika user tidak memasukkan apa-apa, gunakan path default
-    if not output_dir:
-        output_dir = default_path
-        
-    # Pastikan folder ada
+    output_dir = default_path
+    if not no_prompt:
+        output_dir = cyber_input(f"Output path (default: {default_path})")
+
+        if not output_dir:
+            output_dir = default_path
+
     if not os.path.exists(output_dir):
         try:
             os.makedirs(output_dir)
@@ -214,3 +204,81 @@ def get_output_path(default_dir_name: str, filename: str) -> str:
                  os.makedirs(output_dir)
         
     return os.path.join(output_dir, filename)
+
+def get_expiration() -> str:
+    from rich.table import Table
+    from rich.panel import Panel
+    from rich.box import SQUARE
+    
+    expiration_options = [
+        {"name": "Don't autodelete", "value": ""},
+        {"name": "After 5 minutes", "value": "PT5M"},
+        {"name": "After 15 minutes", "value": "PT15M"},
+        {"name": "After 30 minutes", "value": "PT30M"},
+        {"name": "After 1 hour", "value": "PT1H"},
+        {"name": "After 3 hours", "value": "PT3H"},
+        {"name": "After 6 hours", "value": "PT6H"},
+        {"name": "After 12 hours", "value": "PT12H"},
+        {"name": "After 1 day", "value": "P1D"},
+        {"name": "After 2 days", "value": "P2D"},
+        {"name": "After 3 days", "value": "P3D"},
+        {"name": "After 4 days", "value": "P4D"},
+        {"name": "After 5 days", "value": "P5D"},
+        {"name": "After 6 days", "value": "P6D"},
+        {"name": "After 1 week", "value": "P1W"},
+        {"name": "After 2 weeks", "value": "P2W"},
+        {"name": "After 3 weeks", "value": "P3W"},
+        {"name": "After 1 month", "value": "P1M"},
+        {"name": "After 2 months", "value": "P2M"},
+        {"name": "After 3 months", "value": "P3M"},
+        {"name": "After 4 months", "value": "P4M"},
+        {"name": "After 5 months", "value": "P5M"},
+        {"name": "After 6 months", "value": "P6M"},
+    ]
+
+    while True:
+        clear()
+
+        table = Table(
+            show_header=True,
+            header_style="bold cyan",
+            title="[bold magenta]⏰ Pilih Waktu Kedaluwarsa ⏰[/bold magenta]",
+            title_style="bold magenta",
+            title_justify="center",
+            box=SQUARE,
+            show_lines=True,
+            expand=True,
+            padding=(0, 1)
+        )
+
+        table.add_column("No.", style="bold cyan", width=4, justify="center")
+        table.add_column("Waktu Kedaluwarsa", style="bold cyan", min_width=25)
+        
+        for i, option in enumerate(expiration_options):
+            table.add_row(
+                str(i + 1),
+                option['name']
+            )
+
+        table.add_row("0", "[bold yellow]← Kembali tanpa kedaluwarsa[/bold yellow]")
+
+        panel = Panel(
+            table,
+            border_style="medium_purple",
+            padding=(1, 1)
+        )
+        console.print(panel)
+
+        console.print("[dim]Gambar akan dihapus otomatis setelah waktu yang dipilih.[/dim]")
+        console.print("[dim]Gunakan '0' atau 'b' untuk kembali.[/dim]")
+
+        choice = cyber_input("Masukkan nomor pilihan")
+        
+        if choice in ['0', 'b']:
+            return ""
+        
+        if choice.isdigit() and 1 <= int(choice) <= len(expiration_options):
+            return expiration_options[int(choice) - 1]['value']
+        
+        console.print("[bold red]Pilihan tidak valid![/bold red]")
+        cyber_input("Tekan Enter untuk mencoba lagi...")

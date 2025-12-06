@@ -19,7 +19,7 @@ def print_cyber_panel(title: str, subtitle: str = ""):
     """Mencetak panel pembuka dengan gaya cyber."""
     panel = Panel(
         Align.center(f"[bold cyan]{title}[/bold cyan]\n[dim]{subtitle}[/dim]"),
-        title="[bold green]◈ MY-TERMUX-TOOL ◈[/bold green]",
+        title="[bold green]◈ ZeroTools ◈[/bold green]",
         border_style="bright_blue",
         padding=(1, 2),
     )

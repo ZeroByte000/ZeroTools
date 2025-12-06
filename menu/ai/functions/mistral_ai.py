@@ -1,12 +1,12 @@
 # menu/ai/functions/mistral_ai.py
 
 import requests
-from core.utils import *
-from app.console import *
-
+from core.utils import load_config, display_and_select_session, save_new_session
+from app.console import console, print_cyber_panel, cyber_input, clear
+from rich.panel import Panel
+from rich.align import Align
 
 def mistral_ai():
-    """Memulai sesi chat dengan Mistral AI dengan manajemen sesi."""
     clear()
     print_cyber_panel("Mistral AI Chat", "Kelola sesi percakapan Anda.")
     
@@ -21,7 +21,8 @@ def mistral_ai():
     session_id = display_and_select_session('mistral')
     
     if session_id == 'exit':
-        return 
+        return
+
     is_new_session = session_id is None
 
     if is_new_session:
@@ -30,7 +31,7 @@ def mistral_ai():
         console.print(f"[bold green]Melanjutkan sesi lama...[/bold green]")
 
     while True:
-        user_message = cyber_input("Anda")
+        user_message = cyber_input("Anda (ketik 'keluar' untuk keluar dari chat)")
         
         if user_message.lower() in ['keluar', 'exit', 'quit']:
             console.print("[bold yellow]Mengakhiri sesi chat...[/bold yellow]")
@@ -39,6 +40,13 @@ def mistral_ai():
         if not user_message:
             console.print("[dim]Pesan tidak boleh kosong.[/dim]")
             continue
+        user_panel = Panel(
+            user_message,
+            title="[bold blue]Anda[/bold blue]",
+            border_style="blue",
+            padding=(0, 1)
+        )
+        console.print(Align.right(user_panel))
 
         try:
             with console.status("[bold green]Mistral sedang mengetik...[/bold green]", spinner="dots"):
@@ -53,11 +61,18 @@ def mistral_ai():
             if data.get("success"):
                 ai_reply = data.get("result")
                 session_id = data.get("session")
+                
                 if is_new_session:
                     save_new_session('mistral', session_id, user_message)
                     is_new_session = False
-                
-                console.print(f"\n[bold green]AI:[/bold green] {ai_reply}\n")
+
+                ai_panel = Panel(
+                    ai_reply,
+                    title="[bold #00F0FF]Mistral AI[/bold #00F0FF]",
+                    border_style="#00F0FF",
+                    padding=(0, 1)
+                )
+                console.print(Align.left(ai_panel))
             else:
                 console.print(f"[bold red]Gagal mendapatkan respons dari AI.[/bold red]")
                 console.print(f"Detail: {data}")

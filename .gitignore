@@ -36,6 +36,8 @@ env.bak/
 venv.bak/
 
 output/
+downloads/
 
 # Session files
 core/sessions.json
+image.png

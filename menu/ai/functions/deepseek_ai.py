@@ -1,13 +1,12 @@
 # menu/ai/functions/deepseek_ai.py
 
 import requests
-
-from core.utils import *
-from app.console import *
-
+from core.utils import load_config, display_and_select_session, save_new_session
+from app.console import console, print_cyber_panel, cyber_input, clear
+from rich.panel import Panel
+from rich.align import Align
 
 def deepseek_ai():
-    """Memulai sesi chat dengan Deepseek AI dengan manajemen sesi."""
     clear()
     print_cyber_panel("Deepseek AI Chat", "Kelola sesi percakapan Anda.")
     
@@ -18,6 +17,7 @@ def deepseek_ai():
         
     base_url = config.get("base_url")
     api_endpoint = f"{base_url}/api/ai/deepseek"
+
     session_id = display_and_select_session('deepseek')
     
     if session_id == 'exit':
@@ -29,8 +29,10 @@ def deepseek_ai():
         console.print("[bold green]Memulai sesi baru...[/bold green]")
     else:
         console.print(f"[bold green]Melanjutkan sesi lama...[/bold green]")
+
     while True:
-        user_message = cyber_input("Anda")
+
+        user_message = cyber_input("Anda (ketik 'keluar' untuk keluar dari chat)")
         
         if user_message.lower() in ['keluar', 'exit', 'quit']:
             console.print("[bold yellow]Mengakhiri sesi chat...[/bold yellow]")
@@ -39,6 +41,14 @@ def deepseek_ai():
         if not user_message:
             console.print("[dim]Pesan tidak boleh kosong.[/dim]")
             continue
+
+        user_panel = Panel(
+            user_message,
+            title="[bold blue]Anda[/bold blue]",
+            border_style="blue",
+            padding=(0, 1)
+        )
+        console.print(Align.right(user_panel))
 
         try:
             with console.status("[bold green]Deepseek sedang berpikir...[/bold green]", spinner="dots"):
@@ -49,6 +59,7 @@ def deepseek_ai():
                 response = requests.get(api_endpoint, params=params, headers={'accept': 'application/json'})
                 response.raise_for_status()
                 data = response.json()
+
             if data.get("status"):
                 ai_reply = data.get("answer")
                 session_id = data.get("session")
@@ -56,8 +67,14 @@ def deepseek_ai():
                 if is_new_session:
                     save_new_session('deepseek', session_id, user_message)
                     is_new_session = False
-                
-                console.print(f"\n[bold green]AI:[/bold green] {ai_reply}\n")
+
+                ai_panel = Panel(
+                    ai_reply,
+                    title="[bold #00F0FF]Deepseek AI[/bold #00F0FF]",
+                    border_style="#00F0FF",
+                    padding=(0, 1)
+                )
+                console.print(Align.left(ai_panel))
             else:
                 console.print(f"[bold red]Gagal mendapatkan respons dari AI.[/bold red]")
                 console.print(f"Detail: {data}")
