@@ -184,3 +184,33 @@ def display_and_select_session(chat_model: str) -> str | None:
         if choice.isdigit() and 1 <= int(choice) <= len(sessions):
             return sessions[int(choice) - 1]['id']
         console.print("[red]Pilihan tidak valid.[/red]")
+
+def get_output_path(default_dir_name: str, filename: str) -> str:
+    """
+    Meminta input path output dari user atau menggunakan default.
+    Membuat folder jika belum ada.
+    """
+    # Default path adalah 'output' di direktori yang sama dengan main.py
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    default_path = os.path.join(project_root, default_dir_name)
+    
+    # Minta input dari user, dengan default path sebagai petunjuk
+    output_dir = cyber_input(f"Output path (default: {default_path})")
+    
+    # Jika user tidak memasukkan apa-apa, gunakan path default
+    if not output_dir:
+        output_dir = default_path
+        
+    # Pastikan folder ada
+    if not os.path.exists(output_dir):
+        try:
+            os.makedirs(output_dir)
+            console.print(f"[dim]Folder '{output_dir}' dibuat.[/dim]")
+        except OSError as e:
+            console.print(f"[red]Gagal membuat folder '{output_dir}': {e}[/red]")
+            # Fallback ke path home/Downloads jika gagal
+            output_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+            if not os.path.exists(output_dir):
+                 os.makedirs(output_dir)
+        
+    return os.path.join(output_dir, filename)

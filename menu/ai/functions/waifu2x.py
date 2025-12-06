@@ -4,9 +4,9 @@ import os
 import requests
 from datetime import datetime
 
-# Import fungsi upload dan konfigurasi
-from core.utils import upload_to_imgbb_no_api, load_config
-from app.console import console, print_cyber_panel, cyber_input, clear, loading_animation
+from core.utils import *
+from app.console import *
+
 
 def waifu2x():
     """Memperbesar dan meningkatkan kualitas gambar (anime-style) menggunakan Waifu2x."""
@@ -51,15 +51,16 @@ def waifu2x():
             
             response = requests.get(api_endpoint, params=params, headers={'accept': 'image/png'})
             response.raise_for_status()
-            save_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            output_filename = f"waifu2x_image_{timestamp}.png"
-            output_path = os.path.join(save_dir, output_filename)
-            
+            output_filename = f"anime_image_{timestamp}.png"
+
+            # --- PERUBAHAN: Gunakan fungsi helper untuk menentukan path output ---
+            output_path = get_output_path("output", output_filename)
+
             with open(output_path, 'wb') as f:
                 f.write(response.content)
                 
-            console.print(f"\n[bold green]✓ Gambar berhasil diperbesar![/bold green]")
+            console.print(f"\n[bold green]✓ Gambar berhasil diubah![/bold green]")
             console.print(f"Disimpan di: [bold cyan]{output_path}[/bold cyan]")
 
         except requests.exceptions.RequestException as e:

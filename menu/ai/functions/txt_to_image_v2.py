@@ -4,9 +4,9 @@ import os
 import requests
 from datetime import datetime
 
-# Import fungsi konfigurasi
-from core.utils import load_config
-from app.console import console, print_cyber_panel, cyber_input, clear, loading_animation
+from core.utils import *
+from app.console import *
+
 
 def txt_to_image_v2():
     """Membuat gambar dari teks (prompt) menggunakan AI V2."""
@@ -52,15 +52,16 @@ def txt_to_image_v2():
         
         response = requests.get(api_endpoint, params=params, headers={'accept': 'image/png'})
         response.raise_for_status()
-        save_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_filename = f"txt2imgv2_image_{timestamp}.png"
-        output_path = os.path.join(save_dir, output_filename)
-        
+        output_filename = f"anime_image_{timestamp}.png"
+
+        # --- PERUBAHAN: Gunakan fungsi helper untuk menentukan path output ---
+        output_path = get_output_path("output", output_filename)
+
         with open(output_path, 'wb') as f:
             f.write(response.content)
             
-        console.print(f"\n[bold green]✓ Gambar berhasil dibuat![/bold green]")
+        console.print(f"\n[bold green]✓ Gambar berhasil diubah![/bold green]")
         console.print(f"Disimpan di: [bold cyan]{output_path}[/bold cyan]")
 
     except requests.exceptions.RequestException as e:

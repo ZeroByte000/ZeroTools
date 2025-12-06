@@ -1,8 +1,9 @@
 # menu/ai/functions/mistral_ai.py
 
 import requests
-from core.utils import load_config, display_and_select_session, save_new_session
-from app.console import console, print_cyber_panel, cyber_input, clear
+from core.utils import *
+from app.console import *
+
 
 def mistral_ai():
     """Memulai sesi chat dengan Mistral AI dengan manajemen sesi."""
