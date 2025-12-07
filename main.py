@@ -15,6 +15,8 @@ from app.console import console, cyber_input, clear
 from menu.ai import main as ai_menu
 from menu.uploader import main as uploader_menu
 from menu.downloader import main as downloader_menu
+from menu.tools import main as tools_menu
+from menu.search import main as search_menu
 from core.utils import load_config
 
 HEADER_ART_TEMPLATE = """
@@ -25,6 +27,8 @@ MENU_DATA = [
     {"name": "AI", "icon": "🤖", "desc": "Kecerdasan buatan, Chat, Image Gen."},
     {"name": "Uploader", "icon": "📤", "desc": "Unggah file ke berbagai host."},
     {"name": "Downloader", "icon": "📥", "desc": "Unduh video dari berbagai platform."},
+    {"name": "Tools", "icon": "🔧", "desc": "Utilitas dan alat bantu."},
+    {"name": "Search", "icon": "🔍", "desc": "Cari Nganu."},
 ]
 
 
@@ -32,6 +36,8 @@ MENU_ACTIONS = {
     '1': ai_menu,
     '2': uploader_menu,
     '3': downloader_menu,
+    '4': tools_menu,
+    '5': search_menu,
 }
 
 
