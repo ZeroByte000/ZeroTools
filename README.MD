@@ -95,7 +95,7 @@ Kontribusi sangat diterima! Jika Anda menemukan bug atau memiliki saran untuk fi
 
 ## Lisensi
 
-Proyek ini dilisensikan di bawah Lisensi MIT. Lihat file [LICENSE](https://github.com/ZeroByte000/ZeroTools/LICENSE) untuk detail lebih lanjut.
+Proyek ini dilisensikan di bawah Lisensi MIT. Lihat file [LICENSE](https://raw.githubusercontent.com/ZeroByte000/ZeroTools/refs/heads/main/LICENSE) untuk detail lebih lanjut.
 
 ## Author
 
